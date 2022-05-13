@@ -1,0 +1,42 @@
+int redLed = 12;
+int greenLed = 13;
+int smokeA0 = A0;
+int flamePin = 11;
+int Flame = HIGH;
+int sensorThres=100;
+void setup() 
+{
+  pinMode(redLed, OUTPUT);
+  pinMode(greenLed,OUTPUT);
+  pinMode(flamePin, INPUT);
+  pinMode(smokeA0,INPUT);
+  Serial.begin(9600);
+}
+
+void loop() 
+{
+  int analogSensor = analogRead(smokeA0);
+  Flame = digitalRead(flamePin);
+  if (Flame== LOW)
+  {
+    Serial.println("Fire!!!");
+    digitalWrite(redLed, HIGH);
+  }
+  else
+  {
+    Serial.println("No worries");
+    digitalWrite(redLed, LOW);
+  }
+  Serial.print("Pin A0: ");
+  Serial.println(analogSensor);
+  // Checks if it has reached the threshold value
+  if (analogSensor > sensorThres)
+  {
+    digitalWrite(greenLed, HIGH);
+  }
+  else
+  {
+    digitalWrite(greenLed, LOW);
+  }
+  delay(100);
+}
