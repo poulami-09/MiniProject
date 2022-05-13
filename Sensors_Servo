@@ -1,0 +1,102 @@
+#include<Servo.h>
+Servo myservo;
+int pos;
+#define PIN_A1 (15)
+#define PIN_A2 (16)
+#define PIN_A3 (17)
+#define PIN_A4 (18)
+int Led1 = 15;
+int Led2 = 16;
+int Led3 = 17;
+int Led4 = 18;
+int smokeA0 = A0;
+int flameLeft = 4;
+int flameRight = 5;
+int flameForward = 6;
+int Flame1 = HIGH;
+int Flame2 = HIGH;
+int Flame3 = HIGH;
+int sensorThres=100;
+void setup() 
+{
+  myservo.attach(11);
+  myservo.write(90); 
+  pinMode(Led1, OUTPUT);
+  pinMode(Led2,OUTPUT);
+  pinMode(Led3,OUTPUT);
+  pinMode(Led4,OUTPUT);
+  pinMode(flameLeft, INPUT);
+  pinMode(flameRight, INPUT);
+  pinMode(flameForward, INPUT);
+  pinMode(smokeA0,INPUT);
+  Serial.begin(9600);
+}
+
+void loop() 
+{
+  //For sensors
+  int analogSensor = analogRead(smokeA0);
+  Flame1 = digitalRead(flameLeft);
+  Flame2 = digitalRead(flameRight);
+  Flame3 = digitalRead(flameForward);
+  //Flame Sensor-1
+  if (Flame1 == LOW)
+  {
+    Serial.println("(Flame Sensor Left)Fire!!!");
+    digitalWrite(Led1, HIGH);
+  }
+  else
+  {
+    Serial.println("(Flame Sensor Left) No worries");
+    digitalWrite(Led1, LOW);
+  }
+  //Flame Sensor-2
+   if (Flame2 == LOW)
+  {
+    Serial.println("(Flame Sensor Right)Fire!!!");
+    digitalWrite(Led2, HIGH);
+  }
+  else
+  {
+    Serial.println("(Flame Sensor Right) No worries");
+    digitalWrite(Led2, LOW);
+  }
+  //Flame Sensor-3
+   if (Flame3 == LOW)
+  {
+    Serial.println("(Flame Sensor Forward)Fire!!!");
+    digitalWrite(Led3, HIGH);
+  }
+  else
+  {
+    Serial.println("(Flame Sensor Forward) No worries");
+    digitalWrite(Led3, LOW);
+  }
+  //Gas sensor
+  Serial.print("Pin A0: ");
+  Serial.println(analogSensor);
+  // Checks if it has reached the threshold value
+  if (analogSensor > sensorThres)
+  {
+    digitalWrite(Led4, HIGH);
+    Serial.println("Alert Gas Detected ");
+  }
+  else
+  {
+    digitalWrite(Led4, LOW);
+    Serial.println("Normal ");
+  }
+  //For Servo Motor
+  for(pos=0;pos<=180;pos++)
+  {
+   myservo.write(pos);
+   delay(5);
+   }
+  
+  for(pos=180;pos>=0;pos--)
+  {
+   myservo.write(pos);
+   delay(5);
+   }  
+  delay(10);
+}
