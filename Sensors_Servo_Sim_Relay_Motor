@@ -78,12 +78,14 @@ void loop()
    Serial.println("(Flame Sensor Left):Fire Detected");
    move_left();
    Serial.println("Moving Left");
+   fire=true;
  }
  else if (Flame2==LOW)//Fire sensed on right side
  {
    Serial.println("(Flame Sensor Right):Fire Detected");
    move_right();
    Serial.println("Moving Right"); 
+   fire=true;
  }
  else if (Flame3==LOW)//Fire sensed forward
  {
