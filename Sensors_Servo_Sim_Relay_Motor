@@ -111,7 +111,7 @@ void loop()
     Serial.println("Normal ");
   }
   //while fire detected
-  while (fire==true)
+  if (fire == true)
   {
     move_stop();
     Serial.println("Stopped");
