@@ -118,9 +118,6 @@ void loop()
     Serial.println("Alert Gas Detected.");
     send_sms();
     Serial.println("SMS sent.");
-    Serial.println("Calling.");
-    miss_call();
-    Serial.println("Missed Call.");
   }
   fire=false;
   gas=false;
@@ -160,8 +157,6 @@ void miss_call()
   delay(10000); // wait for 10 seconds...
   mySerial.println("ATH"); //hang up
   updateSerial();
-  fire=false;
-  gas=false;
 }
 void servo()
 {
