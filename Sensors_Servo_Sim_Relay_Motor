@@ -69,23 +69,27 @@ void loop()
 
  if (Flame1==HIGH && Flame2==HIGH && Flame3==HIGH)
  {
-   move_stop();
    Serial.println("No worries");
+   move_stop();
+   Serial.println("No movement");
  }
  else if (Flame1==LOW)//Fire sensed on left side
  {
-   move_left();
    Serial.println("(Flame Sensor Left):Fire Detected");
+   move_left();
+   Serial.println("Moving Left");
  }
  else if (Flame2==LOW)//Fire sensed on right side
  {
+   Serial.println("(Flame Sensor Right):Fire Detected");
    move_right();
-   Serial.println("(Flame Sensor Right):Fire Detected"); 
+   Serial.println("Moving Right"); 
  }
  else if (Flame3==LOW)//Fire sensed forward
  {
-   move_forward();
    Serial.println("(Flame Sensor Forward):Fire Detected"); 
+   move_forward();
+   Serial.println("Moving Forward"); 
    fire=true;
  }
  delay(200);//change this value to change the distance
@@ -108,7 +112,7 @@ void loop()
   while (fire==true)
   {
     move_stop();
-    Serial.println("Fire Detected.");
+    Serial.println("Stopped");
     Serial.println("Servo started.");
     servo();
     send_sms();
