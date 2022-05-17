@@ -32,7 +32,7 @@ boolean gas = false;
 void setup() 
 {
   myservo.attach(11);
-  myservo.write(90); 
+  myservo.write(0); 
   
   pinMode(Led1, OUTPUT);
   pinMode(Led2,OUTPUT);
@@ -66,7 +66,9 @@ void loop()
   Flame1 = digitalRead(flameLeft);
   Flame2 = digitalRead(flameRight);
   Flame3 = digitalRead(flameForward);
-
+  fire=false;
+  gas=false;
+  digitalWrite(pump_relay,LOW);
  if (Flame1==HIGH && Flame2==HIGH && Flame3==HIGH)
  {
    Serial.println("No worries");
@@ -115,13 +117,13 @@ void loop()
   {
     move_stop();
     Serial.println("Stopped");
-    Serial.println("Servo started.");
-    servo();
     send_sms();
     Serial.println("SMS sent.");
     Serial.println("Calling.");
     miss_call();
     Serial.println("Missed Call.");
+    Serial.println("Servo started.");
+    servo();
   }
   //if gas detected
   if(gas==true)
@@ -176,13 +178,13 @@ void servo()
    digitalWrite(pump_relay,HIGH);
    delay(100);
     //For Servo Motor
-   for(pos=0;pos<=180;pos++)
+   for(pos=0;pos<=60;pos++)
    {
     myservo.write(pos);
     delay(15);
    }
    delay(10);
-   for(pos=180;pos>=0;pos--)
+   for(pos=60;pos>=0;pos--)
    {
     myservo.write(pos);
     delay(15);
@@ -191,6 +193,8 @@ void servo()
    digitalWrite(pump_relay,LOW);
    myservo.write(0);
    }
+   fire=false;
+   digitalWrite(pump_relay,LOW);
 }
 void move_forward()
 {
