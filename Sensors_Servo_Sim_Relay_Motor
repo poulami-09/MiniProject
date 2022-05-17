@@ -4,7 +4,7 @@
 SoftwareSerial mySerial(3, 2); //SIM800L Tx & Rx is connected to Arduino #3 & #2
 Servo myservo;
 
-int pos;
+int pos = 0;
 int pump_relay = 12;
 #define PIN_A1 (15)
 #define PIN_A2 (16)
@@ -32,7 +32,7 @@ boolean gas = false;
 void setup() 
 {
   myservo.attach(11);
-  myservo.write(0); 
+  myservo.write(90); 
   
   pinMode(Led1, OUTPUT);
   pinMode(Led2,OUTPUT);
@@ -68,7 +68,7 @@ void loop()
   Flame3 = digitalRead(flameForward);
   fire=false;
   gas=false;
-  digitalWrite(pump_relay,LOW);
+  digitalWrite(pump_relay,HIGH);
  if (Flame1==HIGH && Flame2==HIGH && Flame3==HIGH)
  {
    Serial.println("No worries");
@@ -98,35 +98,34 @@ void loop()
  }
  delay(200);//change this value to change the distance
   //Gas sensor
-  Serial.print("Pin A0: ");
-  Serial.println(analogSensor);
+ Serial.print("Pin A0: ");
+ Serial.println(analogSensor);
   // Checks if it has reached the threshold value
-  if (analogSensor > sensorThres)
+ if (analogSensor > sensorThres)
   {
     digitalWrite(Led4, HIGH);
     Serial.println("Alert Gas Detected ");
     gas=true;
   }
-  else
+ else
   {
     digitalWrite(Led4, LOW);
     Serial.println("Normal ");
   }
   //while fire detected
-  if (fire == true)
+ if (fire == true)
   {
     move_stop();
-    Serial.println("Stopped");
+    Serial.println("Stopped moving");
     send_sms();
     Serial.println("SMS sent.");
     Serial.println("Calling.");
     miss_call();
     Serial.println("Missed Call.");
-    Serial.println("Servo started.");
     servo();
   }
   //if gas detected
-  if(gas==true)
+ if(gas==true)
   {
     Serial.println("Alert Gas Detected.");
     send_sms();
@@ -175,26 +174,26 @@ void servo()
 {
   if(fire==true)
   {
-   digitalWrite(pump_relay,HIGH);
+   Serial.println("Servo started.");
+   digitalWrite(pump_relay,LOW);
    delay(100);
     //For Servo Motor
-   for(pos=0;pos<=60;pos++)
+   for(pos=50;pos<=110;pos++)
    {
     myservo.write(pos);
     delay(15);
    }
    delay(10);
-   for(pos=60;pos>=0;pos--)
+   for(pos=110;pos>=50;pos--)
    {
     myservo.write(pos);
     delay(15);
    } 
    delay(10);
    digitalWrite(pump_relay,LOW);
-   myservo.write(0);
+   myservo.write(90);
    }
-   fire=false;
-   digitalWrite(pump_relay,LOW);
+   digitalWrite(pump_relay,HIGH);
 }
 void move_forward()
 {
