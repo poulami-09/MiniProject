@@ -117,12 +117,12 @@ void loop()
   {
     move_stop();
     Serial.println("Stopped moving");
+    servo();
     send_sms();
     Serial.println("SMS sent.");
     Serial.println("Calling.");
     miss_call();
-    Serial.println("Missed Call.");
-    servo();
+    Serial.println("Missed Call.");  
   }
   //if gas detected
  if(gas==true)
@@ -174,9 +174,9 @@ void servo()
 {
   if(fire==true)
   {
-   Serial.println("Servo started.");
+   Serial.println("Pump started.");
    digitalWrite(pump_relay,LOW);
-   delay(100);
+   Serial.println("Servo started.");
     //For Servo Motor
    for(pos=50;pos<=110;pos++)
    {
@@ -190,10 +190,11 @@ void servo()
     delay(15);
    } 
    delay(10);
-   digitalWrite(pump_relay,LOW);
+   Serial.println("Servo stopped.");
    myservo.write(90);
    }
    digitalWrite(pump_relay,HIGH);
+   Serial.println("Pump Stopped.");
 }
 void move_forward()
 {
