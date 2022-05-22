@@ -1,0 +1,248 @@
+#include<Servo.h>
+#include<SoftwareSerial.h>
+
+SoftwareSerial mySerial(3, 2); //SIM800L Tx & Rx is connected to Arduino #3 & #2
+Servo myservo;
+
+int pos;
+int pump_relay = 12;
+#define PIN_A1 (15)
+#define PIN_A2 (16)
+#define PIN_A3 (17)
+#define PIN_A4 (18)
+int Led1 = 15;
+int Led2 = 16;
+int Led3 = 17;
+int Led4 = 18;
+int smokeA0 = A0;
+int flameLeft = 4;
+int flameRight = 5;
+int flameForward = 6;
+int Flame1 = HIGH;
+int Flame2 = HIGH;
+int Flame3 = HIGH;
+int LM1 = 8;           // left motor1
+int LM2 = 9;           // left motor2
+int RM1 = 10;          // right motor1
+int RM2 = 11;          // right motor2
+int sensorThres=100;
+boolean fire = false;
+boolean gas = false;
+
+void setup() 
+{
+  myservo.attach(11);
+  myservo.write(0); 
+  
+  pinMode(Led1, OUTPUT);
+  pinMode(Led2,OUTPUT);
+  pinMode(Led3,OUTPUT);
+  pinMode(Led4,OUTPUT);
+  pinMode(flameLeft, INPUT);
+  pinMode(flameRight, INPUT);
+  pinMode(flameForward, INPUT);
+  pinMode(smokeA0,INPUT);
+  pinMode(pump_relay, OUTPUT);
+  pinMode(LM1, OUTPUT);
+  pinMode(LM2, OUTPUT);
+  pinMode(RM1, OUTPUT);
+  pinMode(RM2, OUTPUT);
+  
+  Serial.begin(9600);
+  
+  mySerial.begin(9600);//Begin serial communication with Arduino and SIM800L
+  mySerial.println("AT"); //Once the handshake test is successful, it will back to OK
+  updateSerial();
+  delay(1000);
+  mySerial.println("AT+CMGF=1"); // Configuring TEXT mode
+  updateSerial();
+  delay(1000);
+}
+
+void loop() 
+{
+  //For sensors
+  int analogSensor = analogRead(smokeA0);
+  Flame1 = digitalRead(flameLeft);
+  Flame2 = digitalRead(flameRight);
+  Flame3 = digitalRead(flameForward);
+  fire=false;
+  gas=false;
+  
+  digitalWrite(pump_relay,HIGH);
+  
+  //Flame Sensor Left
+  if (Flame1 == LOW)
+  {
+    Serial.println("(Flame Sensor Left)Fire!!!");
+    digitalWrite(Led1, HIGH);
+    move_left();
+    Serial.println("Moving Left");
+    fire=true;
+  }
+  //Flame Sensor Right
+   else if (Flame2 == LOW)
+  {
+    Serial.println("(Flame Sensor Right)Fire!!!");
+    digitalWrite(Led2, HIGH);
+    move_left();
+    Serial.println("Moving Left");
+    fire=true;
+  }
+  //Flame Sensor Forward
+   else if (Flame3 == LOW)
+  {
+    Serial.println("(Flame Sensor Forward)Fire!!!");
+    digitalWrite(Led3, HIGH);
+    move_forward();
+    Serial.println("Moving Forward"); 
+    fire=true;
+  }
+  else if (Flame1 == HIGH && Flame2 == HIGH && Flame3 == HIGH)
+  {
+    Serial.println("No worries");
+    digitalWrite(Led1, LOW);
+    digitalWrite(Led2, LOW);
+    digitalWrite(Led3, LOW);
+    fire=false;
+  }
+
+ delay(200);//change this value to change the distance
+ 
+  //Gas sensor
+ Serial.print("Pin A0: ");
+ Serial.println(analogSensor);
+  // Checks if it has reached the threshold value
+ if (analogSensor > sensorThres)
+  {
+    digitalWrite(Led4, HIGH);
+    Serial.println("Alert Gas Detected ");
+    gas=true;
+    if(gas==true)
+    {
+      send_sms();
+      Serial.println("SMS sent for gas.");
+    }
+  }
+ else
+  {
+    digitalWrite(Led4, LOW);
+    Serial.println("Normal gas");
+  }
+  
+  //while fire detected
+ if (fire == true)
+  {
+    move_stop();
+    Serial.println("Stopped moving");
+    send_sms();
+    Serial.println("SMS sent for fire.");
+    Serial.println("Calling.");
+    miss_call();
+    Serial.println("Missed Call.");
+    servo();
+  }
+  
+  fire=false;
+  gas=false;
+}
+
+void updateSerial()
+{
+  while (Serial.available()) 
+  {
+    mySerial.write(Serial.read());//Forward what Serial received to Software Serial Port
+  }
+  while(mySerial.available()) 
+  {
+    Serial.write(mySerial.read());//Forward what Software Serial received to Serial Port
+  }
+}
+
+void send_sms()
+{
+  mySerial.println("AT+CMGS=\"+919007199394\"");//change with phone number to sms
+  updateSerial();
+  if(fire==true)
+  {
+  mySerial.print("Alert Fire Detected"); //text content
+  updateSerial();
+  mySerial.write(26);
+ }
+  if(gas==true)
+  {
+  mySerial.print("Alert Gas Detected"); //text content
+  updateSerial();
+  mySerial.write(26);
+ }
+}
+
+void miss_call()
+{
+  mySerial.println("ATD+ +919007199394;"); //  change with phone number to dial
+  updateSerial();
+  delay(1000); // wait for 1 seconds...
+  mySerial.println("ATH"); //hang up
+  updateSerial();
+}
+
+void servo()
+{
+  if(fire==true)
+  {
+   Serial.println("Pump switched on");
+   digitalWrite(pump_relay,LOW);
+  
+    //For Servo Motor
+   Serial.println("Servo started.");
+   for(pos=0;pos<=60;pos++)
+   {
+    myservo.write(pos);
+    delay(15);
+   }
+   delay(10);
+   for(pos=60;pos>=0;pos--)
+   {
+    myservo.write(pos);
+    delay(15);
+   } 
+   delay(10);
+   Serial.println("Servo stopped.");
+   delay(100);// for how long pump will remain on
+   digitalWrite(pump_relay,LOW);
+   Serial.println("Pump switched off");
+   myservo.write(0);
+   }
+}
+
+void move_forward()
+{
+    digitalWrite(LM1, HIGH);
+    digitalWrite(LM2, LOW);
+    digitalWrite(RM1, HIGH);
+    digitalWrite(RM2, LOW);
+}
+
+void move_left()
+{
+    digitalWrite(LM1, HIGH);
+    digitalWrite(LM2, LOW);
+    digitalWrite(RM1, HIGH);
+    digitalWrite(RM2, HIGH);
+}
+
+void move_right()
+{
+    digitalWrite(LM1, HIGH);
+    digitalWrite(LM2, HIGH);
+    digitalWrite(RM1, HIGH);
+    digitalWrite(RM2, LOW);
+}
+
+void move_stop()
+{
+    digitalWrite(LM1, HIGH);
+    digitalWrite(LM2, HIGH);
+    digitalWrite(RM1, HIGH);
+    digitalWrite(RM2, HIGH);
+}
