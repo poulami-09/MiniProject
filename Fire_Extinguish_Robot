@@ -25,13 +25,13 @@ int LM1 = 8;           // left motor1
 int LM2 = 9;           // left motor2
 int RM1 = 10;          // right motor1
 int RM2 = 11;          // right motor2
-int sensorThres=100;
+int sensorThres=150;
 boolean fire = false;
 boolean gas = false;
 
 void setup() 
 {
-  myservo.attach(11);
+  myservo.attach(13);
   myservo.write(0); 
   
   pinMode(Led1, OUTPUT);
@@ -98,7 +98,7 @@ void loop()
     Serial.println("Moving Forward"); 
     fire=true;
   }
-  else if (Flame1 == HIGH && Flame2 == HIGH && Flame3 == HIGH)
+  else 
   {
     Serial.println("No worries");
     digitalWrite(Led1, LOW);
@@ -192,21 +192,21 @@ void servo()
   {
    Serial.println("Pump switched on");
    digitalWrite(pump_relay,LOW);
-  
+   delay(100);
     //For Servo Motor
    Serial.println("Servo started.");
-   for(pos=0;pos<=60;pos++)
+   for(pos=0;pos<=180;pos++)
    {
     myservo.write(pos);
-    delay(15);
+    delay(25);
    }
-   delay(10);
-   for(pos=60;pos>=0;pos--)
+   delay(25);
+   for(pos=180;pos>=0;pos--)
    {
     myservo.write(pos);
-    delay(15);
+    delay(25);
    } 
-   delay(10);
+   delay(25);
    Serial.println("Servo stopped.");
    delay(100);// for how long pump will remain on
    digitalWrite(pump_relay,LOW);
