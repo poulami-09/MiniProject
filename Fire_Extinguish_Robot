@@ -11,9 +11,9 @@ int pump_relay = 12;
 #define PIN_A3 (17)
 #define PIN_A4 (18)
 int Led1 = 15;
-int Led2 = 16;
-int Led3 = 17;
-int Led4 = 18;
+int Led2 = 16;//Red
+int Led3 = 17;//Blue
+int Led4 = 18;//Green
 int smokeA0 = A0;
 int flameLeft = 4;
 int flameRight = 5;
