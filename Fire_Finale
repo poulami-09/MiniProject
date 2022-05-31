@@ -14,15 +14,15 @@ int buzz = 15;
 int smokeA0 = A0;
 int flameLeft = 6;
 int flameRight = 4;
-int flameForward = 5;
+//int flameForward = 5  ;
 int Flame1 = HIGH;
 int Flame2 = HIGH;
-int Flame3 = HIGH;
+//int Flame3 = HIGH;
 int LM1 = 8;           // left motor1
 int LM2 = 9;           // left motor2
 int RM1 = 10;          // right motor1
 int RM2 = 11;          // right motor2
-int sensorThres=150;
+int sensorThres=100;
 boolean fire = false;
 boolean gas = false;
 
@@ -37,7 +37,7 @@ void setup()
   pinMode(buzz,OUTPUT);
   pinMode(flameLeft, INPUT);
   pinMode(flameRight, INPUT);
-  pinMode(flameForward, INPUT);
+ // pinMode(flameForward, INPUT);
   pinMode(smokeA0,INPUT);
   pinMode(pump_relay, OUTPUT);
   pinMode(LM1, OUTPUT);
@@ -53,7 +53,7 @@ void loop()
   int analogSensor = analogRead(smokeA0);
   Flame1 = digitalRead(flameLeft);
   Flame2 = digitalRead(flameRight);
-  Flame3 = digitalRead(flameForward);
+ // Flame3 = digitalRead(flameForward);
   fire=false;
   gas=false;
   
@@ -66,16 +66,10 @@ void loop()
     digitalWrite(Led1, HIGH);
     digitalWrite(buzz,HIGH);
     move_left();
-     delay(100);
-     Serial.println("Moving Left");
-     while (Flame3 == HIGH)
-     {
-      delay(1000);
-      if (Flame3 == LOW)
-         break;
-     }
+     delay(500);
+     Serial.println("Moving Left");  
     move_forward();
-    delay(4000);
+    delay(1000);
      Serial.println("Moving Forward ....");
     fire=true;
   }
@@ -86,30 +80,25 @@ void loop()
     digitalWrite(Led1, HIGH);
     digitalWrite(buzz,HIGH);
     move_right();
-     delay(100);
+     delay(500);
      Serial.println("Moving Right");
-     while (Flame3 == HIGH)
-     {
-      delay(1000);
-      if (Flame3 == LOW)
-         break;
-     }
+     
     move_forward();
-    delay(4000);
+    delay(1000);
      Serial.println("Moving Forward ....");
     fire=true;
   }
   //Flame Sensor Forward
-   else if (Flame3 == LOW)
-  {
-    Serial.println("(Flame Sensor Forward)Fire!!!");
-    digitalWrite(Led1, HIGH);
-    digitalWrite(buzz,HIGH);
-    move_forward();
-    delay(4000);
-    Serial.println("Moving Forward"); 
-    fire=true;
-  }
+   //else if (Flame3 == LOW)
+  //{
+   // Serial.println("(Flame Sensor Forward)Fire!!!");
+    //digitalWrite(Led1, HIGH);
+   // digitalWrite(buzz,HIGH);
+    //move_forward();
+    //delay(4000);
+   // Serial.println("Moving Forward"); 
+   // fire=true;
+ // }
   else 
   {
     Serial.println("No worries");
@@ -120,8 +109,6 @@ void loop()
     fire=false;
   }
 
- delay(200);//change this value to change the distance
- 
   //Gas sensor
  Serial.print("Pin A0: ");
  Serial.println(analogSensor);
