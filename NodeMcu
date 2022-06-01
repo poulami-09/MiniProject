@@ -1,0 +1,48 @@
+#include <ESP8266WiFi.h>;
+#include <WiFiClient.h>;
+#include <ThingSpeak.h>;
+
+const char* ssid = "stcet";     // Your Network SSID
+const char* password = "stcet_2019";  // Your Network Password
+const char* host = "maker.ifttt.com";
+
+
+int val;
+int pin = A0;  //LM53 Pin Connected at A0 Pin
+
+WiFiClient client;
+
+unsigned long myChannelNumber = 1754855;         //Your Channel Number (Without Brackets)
+const char* myWriteAPIKey = "L63JB0RC5SVUU5DC";  //Your Write API Key
+
+void setup() {
+  Serial.begin(9600);
+  delay(10);
+  // Connect to WiFi network
+  WiFi.begin(ssid, password);
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+
+  //WiFiClient client;
+  const int httpPort = 80;
+  if (!client.connect(host, httpPort)) {
+    Serial.println("connection failed");
+    return;
+  }
+
+  val = analogRead(pin);  // Read Analog values and Store in val variable
+  Serial.print("Gas Value: ");
+  Serial.print(val);  // Print on Serial Monitor
+  //Serial.println("*C");
+  delay(1000);
+  ThingSpeak.writeField(myChannelNumber, 1, val, myWriteAPIKey);  //Update in ThingSpeak
+
+  if (val > 250) {
+    String url = "/trigger/Fire_Detected/json/with/key/eE02uGIYqhbmHtHaH29HoO6TDYFm8Sr8n_2ejcrCI3N";
+
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+  }
+  delay(100);
+}
