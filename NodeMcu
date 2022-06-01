@@ -12,8 +12,8 @@ int pin = A0;  //LM53 Pin Connected at A0 Pin
 
 WiFiClient client;
 
-unsigned long myChannelNumber = 1754855;         //Your Channel Number (Without Brackets)
-const char* myWriteAPIKey = "L63JB0RC5SVUU5DC";  //Your Write API Key
+unsigned long myChannelNumber = 1754970;         //Your Channel Number (Without Brackets)
+const char* myWriteAPIKey = "UI3FVVNRDPXCXXBA";  //Your Write API Key
 
 void setup() {
   Serial.begin(9600);
@@ -40,7 +40,7 @@ void loop() {
   ThingSpeak.writeField(myChannelNumber, 1, val, myWriteAPIKey);  //Update in ThingSpeak
 
   if (val > 250) {
-    String url = "/trigger/Fire_Detected/json/with/key/eE02uGIYqhbmHtHaH29HoO6TDYFm8Sr8n_2ejcrCI3N";
+    String url = "/trigger/Gas_Detected/json/with/key/kPnK_kGcC1js_1GdG6kMwUcpSZDD3h-kICufnB4rFJU";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
   }
