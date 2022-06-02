@@ -41,10 +41,10 @@ void loop()
   Serial.println(val);  // Print on Serial Monitor
   //Serial.println("*C");
   delay(1000);
-  ThingSpeak.writeField(myChannelNumber, 2, val, myWriteAPIKey);  //Update in ThingSpeak
+  ThingSpeak.writeField(myChannelNumber, 4, val, myWriteAPIKey);  //Update in ThingSpeak
 
   if (val > 100) {
-    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+    String url = "https://maker.ifttt.com/trigger/Smoke_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
   }
@@ -59,7 +59,7 @@ void loop()
   ThingSpeak.writeField(myChannelNumber, 1, val1, myWriteAPIKey);  //Update in ThingSpeak
 
   if (val1 == LOW) {
-    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+    String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
     
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
     Serial.println("Mail Sent");
@@ -72,10 +72,10 @@ void loop()
   Serial.println(val2);  // Print on Serial Monitor
   //Serial.println("*C");
   delay(1000);
-  ThingSpeak.writeField(myChannelNumber, 3, val, myWriteAPIKey);  //Update in ThingSpeak
+  ThingSpeak.writeField(myChannelNumber, 2, val2, myWriteAPIKey);  //Update in ThingSpeak
 
   if (val2 == LOW) {
-    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+    String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
     Serial.println("Mail Sent");
@@ -88,10 +88,10 @@ void loop()
   Serial.println(val3);  // Print on Serial Monitor
   //Serial.println("*C");
   delay(1000);
-  ThingSpeak.writeField(myChannelNumber, 4, val, myWriteAPIKey);  //Update in ThingSpeak
+  ThingSpeak.writeField(myChannelNumber, 3, val3, myWriteAPIKey);  //Update in ThingSpeak
 
   if (val3 == LOW) {
-    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+    String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
     Serial.println("Mail Sent");
