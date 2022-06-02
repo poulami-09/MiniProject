@@ -25,7 +25,7 @@ void setup() {
 
 void loop() {
 
-  //WiFiClient client;
+  WiFiClient client;
   const int httpPort = 80;
   if (!client.connect(host, httpPort)) {
     Serial.println("connection failed");
@@ -34,15 +34,16 @@ void loop() {
 
   val = analogRead(pin);  // Read Analog values and Store in val variable
   Serial.print("Gas Value: ");
-  Serial.print(val);  // Print on Serial Monitor
+  Serial.println(val);  // Print on Serial Monitor
   //Serial.println("*C");
   delay(1000);
   ThingSpeak.writeField(myChannelNumber, 1, val, myWriteAPIKey);  //Update in ThingSpeak
 
-  if (val > 250) {
-    String url = "/trigger/Gas_Detected/json/with/key/kPnK_kGcC1js_1GdG6kMwUcpSZDD3h-kICufnB4rFJU";
+  if (val > 100) {
+    String url = "https://maker.ifttt.com/trigger/Gas_Detected/json/with/key/kPnK_kGcC1js_1GdG6kMwUcpSZDD3h-kICufnB4rFJU";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
   }
   delay(100);
 }
+
