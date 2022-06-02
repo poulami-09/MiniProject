@@ -1,0 +1,100 @@
+#include <ESP8266WiFi.h>;
+#include <WiFiClient.h>;
+#include <ThingSpeak.h>;
+
+const char* ssid = "stcet";     // Your Network SSID
+const char* password = "stcet_2019";  // Your Network Password
+const char* host = "maker.ifttt.com";
+
+
+int val,val1,val2,val3;
+int Smokepin = A0;  //LM53 Pin Connected at A0 Pin
+int Fire1pin = D0;
+int Fire2pin = D1;
+int Fire3pin = D2;
+
+WiFiClient client;
+
+unsigned long myChannelNumber = 1756838;         //Your Channel Number (Without Brackets)
+const char* myWriteAPIKey = "OU3JA0IPK5W7FWI7";  //Your Write API Key
+
+void setup() {
+  Serial.begin(9600);
+  delay(10);
+  // Connect to WiFi network
+  WiFi.begin(ssid, password);
+  ThingSpeak.begin(client);
+}
+
+void loop() 
+{
+
+  WiFiClient client;
+  const int httpPort = 80;
+  if (!client.connect(host, httpPort)) {
+    Serial.println("connection failed");
+    return;
+  }
+//For Gas Sensor
+  val = analogRead(Smokepin);  // Read Analog values and Store in val variable
+  Serial.print("Gas Value: ");
+  Serial.println(val);  // Print on Serial Monitor
+  //Serial.println("*C");
+  delay(1000);
+  ThingSpeak.writeField(myChannelNumber, 2, val, myWriteAPIKey);  //Update in ThingSpeak
+
+  if (val > 100) {
+    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+  }
+  delay(100);
+  
+  //For FlameLeft
+    val1 = analogRead(Fire1pin);  // Read Analog values and Store in val variable
+  Serial.print("Fire Left Value: ");
+  Serial.println(val1);  // Print on Serial Monitor
+  //Serial.println("*C");
+  delay(1000);
+  ThingSpeak.writeField(myChannelNumber, 1, val1, myWriteAPIKey);  //Update in ThingSpeak
+
+  if (val1 == LOW) {
+    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+    
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    Serial.println("Mail Sent");
+  }
+  delay(100);
+  
+  //For FlameForward
+    val2 = analogRead(Fire2pin);  // Read Analog values and Store in val variable
+  Serial.print("Fire Forward Value: ");
+  Serial.println(val2);  // Print on Serial Monitor
+  //Serial.println("*C");
+  delay(1000);
+  ThingSpeak.writeField(myChannelNumber, 3, val, myWriteAPIKey);  //Update in ThingSpeak
+
+  if (val2 == LOW) {
+    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    Serial.println("Mail Sent");
+  }
+  delay(100);
+  
+  //For FlameRight
+    val3 = analogRead(Flame3pin);  // Read Analog values and Store in val variable
+  Serial.print("Fire Right Value: ");
+  Serial.println(val3);  // Print on Serial Monitor
+  //Serial.println("*C");
+  delay(1000);
+  ThingSpeak.writeField(myChannelNumber, 4, val, myWriteAPIKey);  //Update in ThingSpeak
+
+  if (val3 == LOW) {
+    String url = "https://maker.ifttt.com/trigger/Fire_Gas_Detection/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
+
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    Serial.println("Mail Sent");
+  }
+  delay(100);
+}
