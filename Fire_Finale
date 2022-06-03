@@ -12,17 +12,17 @@ int Led2 = 17;//Blue
 int Led3 = 18;//Green
 int buzz = 15;
 int smokeA0 = A0;
-int flameLeft = 6;
-int flameRight = 4;
-//int flameForward = 5  ;
+int flameLeft = 4;
+int flameRight = 5;
+int flameForward = 6  ;
 int Flame1 = HIGH;
 int Flame2 = HIGH;
-//int Flame3 = HIGH;
+int Flame3 = HIGH;
 int LM1 = 8;           // left motor1
 int LM2 = 9;           // left motor2
 int RM1 = 10;          // right motor1
 int RM2 = 11;          // right motor2
-int sensorThres=100;
+int sensorThres=120;
 boolean fire = false;
 boolean gas = false;
 
@@ -37,7 +37,7 @@ void setup()
   pinMode(buzz,OUTPUT);
   pinMode(flameLeft, INPUT);
   pinMode(flameRight, INPUT);
- // pinMode(flameForward, INPUT);
+  pinMode(flameForward, INPUT);
   pinMode(smokeA0,INPUT);
   pinMode(pump_relay, OUTPUT);
   pinMode(LM1, OUTPUT);
@@ -53,14 +53,14 @@ void loop()
   int analogSensor = analogRead(smokeA0);
   Flame1 = digitalRead(flameLeft);
   Flame2 = digitalRead(flameRight);
- // Flame3 = digitalRead(flameForward);
+  Flame3 = digitalRead(flameForward);
   fire=false;
   gas=false;
   
   digitalWrite(pump_relay,HIGH);
   
   //Flame Sensor Left
-  if (Flame1 == LOW)
+ if (Flame1 == LOW)
   {
     Serial.println("(Flame Sensor Left)Fire!!!");
     digitalWrite(Led1, HIGH);
@@ -68,11 +68,11 @@ void loop()
     move_left();
      delay(500);
      Serial.println("Moving Left");  
-    move_forward();
+   move_forward();
     delay(1000);
      Serial.println("Moving Forward ....");
-    fire=true;
-  }
+   fire=true;
+ }
   //Flame Sensor Right
    else if (Flame2 == LOW)
   {
@@ -89,16 +89,16 @@ void loop()
     fire=true;
   }
   //Flame Sensor Forward
-   //else if (Flame3 == LOW)
-  //{
-   // Serial.println("(Flame Sensor Forward)Fire!!!");
-    //digitalWrite(Led1, HIGH);
-   // digitalWrite(buzz,HIGH);
-    //move_forward();
-    //delay(4000);
-   // Serial.println("Moving Forward"); 
-   // fire=true;
- // }
+   else if (Flame3 == LOW)
+  {
+   Serial.println("(Flame Sensor Forward)Fire!!!");
+    digitalWrite(Led1, HIGH);
+    digitalWrite(buzz,HIGH);
+    move_forward();
+    delay(4000);
+    Serial.println("Moving Forward"); 
+   fire=true;
+ }
   else 
   {
     Serial.println("No worries");
@@ -185,7 +185,7 @@ void move_forward()
     digitalWrite(RM2, LOW);
 }
 
-void move_left()
+void move_right()
 {
     digitalWrite(LM1, HIGH);
     digitalWrite(LM2, LOW);
@@ -193,7 +193,7 @@ void move_left()
     digitalWrite(RM2, HIGH);
 }
 
-void move_right()
+void move_left()
 {
     digitalWrite(LM1, HIGH);
     digitalWrite(LM2, HIGH);
