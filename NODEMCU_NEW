@@ -1,4 +1,4 @@
-//#include <ESP8266WiFi.h>;
+#include <ESP8266WiFi.h>;
 #include <WiFiClient.h>;
 #include <ThingSpeak.h>;
 
@@ -10,22 +10,25 @@ const char* host = "maker.ifttt.com";
 
 int val,val1,val2,val3;
 int Smokepin = A0;  //LM53 Pin Connected at A0 Pin
-
-
+#define Fire1pin D0
+#define Fire2pin D1
+#define Fire3pin D2
+//int Fire1pin = D0;
+//int Fire2pin = D1;
+//int Fire3pin = D2;
+ 
 WiFiClient client;
 
 unsigned long myChannelNumber = 1756838;         //Your Channel Number (Without Brackets)
 const char* myWriteAPIKey = "OU3JA0IPK5W7FWI7";  //Your Write API Key
 
-#define Fire1pin D0
-#define Fire2pin D1
-#define Fire3pin D2
+
 void setup()
 {
   Serial.begin(9600);
   pinMode(Fire1pin, INPUT);
-  pinMode(Fire2pin, INPUT);
-  pinMode(Fire3pin, INPUT);
+  //pinMode(Fire2pin, INPUT);
+  //pinMode(Fire3pin, INPUT);
   delay(10);
   // Connect to WiFi network
   WiFi.begin(ssid, password);
@@ -49,10 +52,12 @@ void loop()
   delay(1000);
   ThingSpeak.writeField(myChannelNumber, 4, val, myWriteAPIKey);  //Update in ThingSpeak
 
-  if (val > 100) {
+  if (val > 150) {
     String url = "https://maker.ifttt.com/trigger/Smoke_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+        Serial.println("Mail Sent");
+    
   }
   delay(100);
   
@@ -64,7 +69,7 @@ void loop()
   delay(1000);
   ThingSpeak.writeField(myChannelNumber, 1, val1, myWriteAPIKey);  //Update in ThingSpeak
 
-  if (val1 == 1) {
+  if (val1 == 0) {
     String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
     
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
@@ -80,7 +85,7 @@ void loop()
   delay(1000);
   ThingSpeak.writeField(myChannelNumber, 2, val2, myWriteAPIKey);  //Update in ThingSpeak
 
-  if (val2 == 1) {
+  if (val2 == 0) {
     String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
@@ -89,14 +94,14 @@ void loop()
   delay(100);
   
   //For FlameRight
-    val3 = digitalRead(Flame3pin);  // Read Analog values and Store in val variable
+    val3 = digitalRead(Fire3pin);  // Read Analog values and Store in val variable
   Serial.print("Fire Right Value: ");
   Serial.println(val3);  // Print on Serial Monitor
   //Serial.println("*C");
   delay(1000);
   ThingSpeak.writeField(myChannelNumber, 3, val3, myWriteAPIKey);  //Update in ThingSpeak
 
-  if (val3 == 1) {
+  if (val3 == 0) {
     String url = "https://maker.ifttt.com/trigger/Fire_Detected/json/with/key/dNK2KEO4iSDSIZ1D5b72oPNSJQ7kfEf0WN663DlnA3E";
 
     client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
